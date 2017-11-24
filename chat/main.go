@@ -29,9 +29,11 @@ func main() {
 	var addr = flag.String("addr", ":8080", "The addr of the application.")
 	flag.Parse()
 	r := newRoom()
+	ch := newChannel()
 	r.tracer = trace.New(os.Stdout)
-	http.Handle("/", &templateHandler{filename: "chat.html"})
-	http.Handle("/room", r)
+	http.Handle("/", &templateHandler{filename: "main.html"})
+	http.Handle("/chat", &templateHandler{filename: "chat.html"})
+	http.Handle("/room", ch)
 
 	go r.run()
 

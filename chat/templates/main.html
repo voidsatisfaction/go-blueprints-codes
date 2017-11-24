@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Chat main!!</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
+    </script>
+  </head>
+  <body>
+    <h1>Chat main!!!</h1>
+    <input id="searchText" type="text">
+    <a id="chatUrlManager" href="/chat">
+      <input id="searchBox" type="submit" value="Search Room!">
+    </a>
+    <script type="text/javascript">
+      $(function() {
+        var roomName = "";
+        $("#searchText").keyup(function() {
+          var roomName = $(this).val()
+          $("#chatUrlManager").attr("href", "/chat?name=" + roomName)
+        })
+      })
+    </script>
+  </body>
+</html>
