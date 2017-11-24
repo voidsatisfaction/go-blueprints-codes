@@ -3,6 +3,10 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/stretchr/objx"
+	"github.com/voidsatisfaction/blueprints/chat/trace"
 
 	"github.com/gorilla/websocket"
 )
@@ -53,14 +57,21 @@ func (ch *channel) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if !ch.checkRoomExist(roomName) {
 		ch.makeNewRoom(roomName)
 		r := ch.roomMap[roomName]
+		r.tracer = trace.New(os.Stdout)
 		go r.run()
 	}
 	r := ch.roomMap[roomName]
 
+	authCookie, err := req.Cookie("auth")
+	if err != nil {
+		log.Fatal("Railed to get auth cookie:", err)
+		return
+	}
 	client := &client{
-		socket: socket,
-		send:   make(chan []byte, messageBufferSize),
-		room:   r,
+		socket:   socket,
+		send:     make(chan *message, messageBufferSize),
+		room:     r,
+		userData: objx.MustFromBase64(authCookie.Value),
 	}
 
 	r.join <- client

@@ -1,11 +1,9 @@
 package main
 
-import (
-	"github.com/voidsatisfaction/blueprints/trace"
-)
+import "github.com/voidsatisfaction/blueprints/chat/trace"
 
 type room struct {
-	forward chan []byte
+	forward chan *message
 	join    chan *client
 	leave   chan *client
 	clients map[*client]bool
@@ -14,7 +12,7 @@ type room struct {
 
 func newRoom() *room {
 	return &room{
-		forward: make(chan []byte),
+		forward: make(chan *message),
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
@@ -35,7 +33,7 @@ func (r *room) run() {
 			close(client.send)
 			r.tracer.Trace("Client left")
 		case msg := <-r.forward:
-			r.tracer.Trace("Message received: ", string(msg))
+			r.tracer.Trace("Message received: ", msg.Message)
 			for client := range r.clients {
 				client.send <- msg
 				r.tracer.Trace(" -- sent to Client")
