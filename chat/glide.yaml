@@ -1,0 +1,7 @@
+package: github.com/voidsatisfaction/blueprints/chat
+import:
+- package: github.com/gorilla/websocket
+- package: github.com/stretchr/gomniauth
+  subpackages:
+  - providers/google
+- package: github.com/stretchr/objx
